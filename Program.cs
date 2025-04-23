@@ -5,8 +5,29 @@ namespace MiniBankSystemProject
 {
     internal class Program
     {
+        /* ====================== Variables ====================== */
+        // Queue to store account opening requests
+        public static Queue<string> accountOpeningRequests = new Queue<string>();
+
+        //List to store accounts
+        public static List<string> Accounts = new List<string>();
+        public static List<string> RejectedAccountReq = new List<string>();
+        public static List<string> LoanRequests = new List<string>();
+        //List to store reviews
+        public static List<string> ReviewsList = new List<string>();
+
+
+        //Ceate a writer to write to a file
+        public static StreamWriter writer = new StreamWriter("accounts.txt", true);
+
+        //Create a reader to read from a file
+        public static StreamReader reader = new StreamReader("accounts.txt");
+
+        /* ====================== Main Function ====================== */
         public static void Main(string[] args)
         {
+
+
             StartSystem();
         }
 
@@ -55,7 +76,6 @@ namespace MiniBankSystemProject
             } while (on);
         }
 
-
         // Displays the main menu for admin
         public static int ShowMainMenuAdmin()
         {
@@ -86,6 +106,7 @@ namespace MiniBankSystemProject
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 9. Delete Account                                    ║");
                 Console.WriteLine("║                                                      ║");
+                Console.WriteLine("║ -1. Go Back                                          ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 0. Exit Application                                  ║");
                 Console.WriteLine("║                                                      ║");
@@ -123,7 +144,7 @@ namespace MiniBankSystemProject
 
                         /*======================== Loan Requests =========================*/
                         case 5:
-                            LoanRequests();
+                            LoanRequestss();
                             break;
 
                         /*======================== Suspend Account =========================*/
@@ -150,6 +171,12 @@ namespace MiniBankSystemProject
                         case 0:
                             ExitApplication();
                             break;
+
+                        /*======================== Exit Application =========================*/
+                        case -1:
+                            goBack();
+                            break;
+
 
                         // Invalid choice
                         default:
@@ -202,6 +229,10 @@ namespace MiniBankSystemProject
                 Console.WriteLine("║ 8. Update Acoount Details                            ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 9. Delete Account                                    ║");
+                Console.WriteLine("║                                                      ║");
+                Console.WriteLine("║ 10. Make Review                                      ║");
+                Console.WriteLine("║                                                      ║");
+                Console.WriteLine("║ -1. Go Back                                          ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 0. Exit Application                                  ║");
                 Console.WriteLine("║                                                      ║");
@@ -262,11 +293,12 @@ namespace MiniBankSystemProject
                             DeleteUserAccount();
                             break;
 
-                        /*======================== - =========================*/
-                        //case 10:
+                        /*======================== Make Review =========================*/
+                        case 10:
 
-                        //    Console.WriteLine("\nPress Enter to Go Back To Menu...");
-                        //    break;
+                            Reviews();
+                            Console.WriteLine("\nPress Enter to Go Back To Menu...");
+                            break;
 
                         /*======================== - =========================*/
                         //case 11:
@@ -285,6 +317,11 @@ namespace MiniBankSystemProject
 
                         //    Console.WriteLine("\nPress Enter to Go Back To Menu...");
                         //    break;
+
+                        /*======================== Go Back =========================*/
+                        case -1:
+                            goBack();
+                            break;
 
                         /*======================== Exit Application =========================*/
                         case 0:
@@ -311,6 +348,7 @@ namespace MiniBankSystemProject
                 Console.ReadLine();
             }
         }
+
         // Exits the application
         public static void ExitApplication()
         {
@@ -329,19 +367,60 @@ namespace MiniBankSystemProject
             DisplayWelcomeMessage();
         }
 
+        // Go Back
+        public static void goBack()
+        {
+            Console.Clear();
+            DisplayWelcomeMessage();
+
+        }
 
 
         /* ====================== Admin's Functions ====================== */
 
+        /*------------------------View Requests---------------------*/
+        public static void ViewRequests()
+        {
+            Console.Clear();
+            Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+            Console.WriteLine("║                     VIEW REQUESTS                      ║");
+            Console.WriteLine("╚════════════════════════════════════════════════════════╝");
+            Console.WriteLine("\n");
+
+            foreach (var request in accountOpeningRequests)
+            {
+                Console.WriteLine(request);
+                Console.WriteLine("Write 'a , A' to Accept Or 'r , R' to Reject");
+                char k = Console.ReadKey().KeyChar;
+                if (k == 'a' || k == 'A')
+                {
+                    Accounts.Add(request);
+                    Console.WriteLine("\nAccount Accepted");
+                    accountOpeningRequests.Dequeue();
+                }
+                else if (k == 'r' || k == 'R')
+                {
+                    RejectedAccountReq.Add(request);
+                    Console.WriteLine("\nAccount Rejected");
+                    accountOpeningRequests.Dequeue();
+                }
+            }
+        }
 
         /*------------------------View Accounts---------------------*/
         public static void ViewAccounts()
         {
             Console.Clear();
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║                    VIEW ACCOUNTS                      ║");
+            Console.WriteLine("║                    VIEW ACCOUNTS                       ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
             Console.WriteLine("\n");
+
+            foreach (var acc in Accounts)
+            {
+                Console.WriteLine(acc);
+
+            }
 
         }
 
@@ -353,6 +432,11 @@ namespace MiniBankSystemProject
             Console.WriteLine("║                    VIEW REVIEWS                       ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
             Console.WriteLine("\n");
+
+            foreach (var review in ReviewsList)
+            {
+                Console.WriteLine(review);
+            }
 
         }
 
@@ -368,7 +452,7 @@ namespace MiniBankSystemProject
         }
 
         /*------------------------Loan Requests---------------------*/
-        public static void LoanRequests()
+        public static void LoanRequestss()
         {
             Console.Clear();
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
@@ -437,6 +521,49 @@ namespace MiniBankSystemProject
             Console.WriteLine("║              REQUEST ACCOUNT OPENING                  ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
             Console.WriteLine("\n");
+
+            Console.WriteLine("Please fill in the following details to request an account opening:");
+
+            Console.Write("Name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            Console.Write("Phone Number: ");
+            string phoneNumber = Console.ReadLine();
+
+            Console.Write("Address: ");
+            string address = Console.ReadLine();
+
+            Console.Write("Date of Birth (dd/mm/yyyy): ");
+            string dateOfBirth = Console.ReadLine();
+
+            Console.Write("Account Type (Savings/Current): ");
+            string accountType = Console.ReadLine();
+
+            Console.Write("Initial Deposit Amount: ");
+            string initialDeposit = Console.ReadLine();
+
+            Console.Write("Preferred Username: ");
+            string username = Console.ReadLine();
+
+            Console.Write("Preferred Password: ");
+            string password = Console.ReadLine();
+
+            Console.WriteLine("\n");
+            Console.WriteLine("Please review your details:");
+            Console.WriteLine($"Name: {name}");
+            Console.WriteLine($"Email: {email}");
+            Console.WriteLine($"Phone Number: {phoneNumber}");
+            Console.WriteLine($"Address: {address}");
+            Console.WriteLine($"Date of Birth: {dateOfBirth}");
+            Console.WriteLine($"Account Type: {accountType}");
+            Console.WriteLine($"Initial Deposit Amount: {initialDeposit}");
+            Console.WriteLine($"Preferred Username: {username}");
+
+            accountOpeningRequests.Enqueue(name + " | " + email + " | " + phoneNumber + " | " + address + " | " + dateOfBirth + " | " + accountType + " | " + initialDeposit + " | " + username + " | " + password);
+
 
         }
 
@@ -528,7 +655,21 @@ namespace MiniBankSystemProject
 
         }
 
+        /*------------------------Make Review---------------------*/
+        public static void Reviews()
+        {
+            Console.Clear();
+            Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+            Console.WriteLine("║                       REVIEWS                         ║");
+            Console.WriteLine("╚════════════════════════════════════════════════════════╝");
+            Console.WriteLine("\n");
+
+            Console.WriteLine("Please write your review:");
+            string review = Console.ReadLine();
+            ReviewsList.Add(review);
+            Console.WriteLine("Thank you for your review!");
+
+        }
+
     }
-
-
 }
