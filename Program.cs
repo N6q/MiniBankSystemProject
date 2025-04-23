@@ -5,18 +5,27 @@ namespace MiniBankSystemProject
 {
     internal class Program
     {
-        /* ====================== Variables ====================== */
+        /* ====================== Constants======================= */
+        const double MinimumBalance = 100.0;
+        const string AccountsFilePath = "accounts.txt";
+        const string ReviewsFilePath = "reviews.txt";
+
+        /* ====================== Global Variables (List, Queue, Stacks) ====================== */
         // Queue to store account opening requests
         public static Queue<string> accountOpeningRequests = new Queue<string>();
 
         //List to store accounts
+        public static List <string> accountOpeningRequestsList = new List<string>();
+
         public static List<string> Accounts = new List<string>();
         public static List<string> RejectedAccountReq = new List<string>();
         public static List<string> LoanRequests = new List<string>();
+
         //List to store reviews
-        public static List<string> ReviewsList = new List<string>();
+        public static List<string> ReviewsL = new List<string>();
+        //public static 
 
-
+        public static Stack<string> ReviewsS = new Stack<string>();
         //Ceate a writer to write to a file
         public static StreamWriter writer = new StreamWriter("accounts.txt", true);
 
