@@ -156,9 +156,8 @@ namespace MiniBankSystemProject
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 9. Delete Account                                    ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ -1. Go To MAIN MENU                                  ║");
+                Console.WriteLine("║ 0. Go To MAIN MENU                                   ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ 0. Exit Application                                  ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("╚══════════════════════════════════════════════════════╝");
 
@@ -215,15 +214,10 @@ namespace MiniBankSystemProject
                         /*======================== Delete Account =========================*/
                         case 9:
                             DeleteAccount();
-                            break;
+                            break;                     
 
                         /*======================== Exit Application =========================*/
                         case 0:
-                            ExitApplication();
-                            break;
-
-                        /*======================== Exit Application =========================*/
-                        case -1:
                             goBack();
                             break;
 
@@ -282,9 +276,8 @@ namespace MiniBankSystemProject
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 10. Make Review                                      ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ -1. Go To MAIN MENU                                  ║");
+                Console.WriteLine("║ 0. Go To MAIN MENU                                   ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ 0. Exit Application                                  ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("╚══════════════════════════════════════════════════════╝");
 
@@ -369,14 +362,9 @@ namespace MiniBankSystemProject
                         //    break;
 
                         /*======================== Go Back =========================*/
-                        case -1:
-                            goBack();
-                            break;
-
-                        /*======================== Exit Application =========================*/
                         case 0:
-                            ExitApplication();
-                            break;
+                            goBack();
+                            break;                 
 
                         //invalid choice
                         default:
@@ -605,7 +593,6 @@ namespace MiniBankSystemProject
             }
             Console.WriteLine("\n");      
 
-            Console.WriteLine("Press Enter to Go Back To Menu...");
 
         }
 
@@ -663,12 +650,15 @@ namespace MiniBankSystemProject
                 return;
             }
 
-            // Process each request
-            foreach (var request in accountOpeningRequests)
+            // Process each request safely
+            while (accountOpeningRequests.Count > 0)
             {
+                string request = accountOpeningRequests.Peek();  // Look at first without removing
                 Console.WriteLine(request);
                 Console.WriteLine("Write 'a , A' to Accept Or 'r , R' to Reject");
                 char k = Console.ReadKey().KeyChar;
+                Console.WriteLine();  // Move to next line after key press
+
                 if (k == 'a' || k == 'A')
                 {
                     string request1 = accountOpeningRequests.Dequeue();
@@ -688,12 +678,18 @@ namespace MiniBankSystemProject
                 }
                 else if (k == 'r' || k == 'R')
                 {
-                    RejectedAccountReqL.Add(request);
-                    Console.WriteLine("\nAccount Rejected");
-                    accountOpeningRequests.Dequeue();
+                    RejectedAccountReqL.Add(accountOpeningRequests.Dequeue());
+                    Console.WriteLine("Account Rejected");
                 }
+                else
+                {
+                    Console.WriteLine("Invalid input. Skipping request...");
+                }
+
+                Console.WriteLine(); 
             }
         }
+
 
         /*------------------------Loan Requests---------------------*/
         public static void LoanRequestss()
