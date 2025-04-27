@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MiniBankSystemProject
 {
@@ -738,6 +739,13 @@ namespace MiniBankSystemProject
             Console.WriteLine("║                   SEARCH ACCOUNT                       ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
             Console.WriteLine("\n");
+
+            int index = GetAccountIndex();
+            if (index == -1) return;
+
+            Console.WriteLine($"Account Number: {accountNumbersL[index]}");
+            Console.WriteLine($"Account Name: {accountNamesL[index]}");
+            Console.WriteLine($"Balance: {balancesL[index]}");
 
         }
 
