@@ -140,12 +140,12 @@ namespace MiniBankSystemProject
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 1. View Requests                                     ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ 2. View Accounts                                     ║");
+                Console.WriteLine("║ 2. Process Accounts Requests                         ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ 3. View Reviews                                      ║");
+                Console.WriteLine("║ 3. View Accounts                                     ║");
                 Console.WriteLine("║                                                      ║");
-                Console.WriteLine("║ 4. Process Request                                   ║");
-                Console.WriteLine("║                                                      ║");
+                Console.WriteLine("║ 4. View Reviews                                      ║");
+                Console.WriteLine("║                                                      ║");                                                                    
                 Console.WriteLine("║ 5. Loan Requests                                     ║");
                 Console.WriteLine("║                                                      ║");
                 Console.WriteLine("║ 6. Suspend Account                                   ║");
@@ -176,21 +176,21 @@ namespace MiniBankSystemProject
                             ViewRequests();
                             break;
 
-                        /*======================== View Accounts =========================*/
+                        /*======================== Process Request =========================*/
                         case 2:
+                            ProcessRequest();
+                            break;
+
+                        /*======================== View Accounts =========================*/
+                        case 3:
                             ViewAccounts();
                             break;
 
                         /*======================== View Reviews =========================*/
-                        case 3:
+                        case 4:
                             ViewReviews();
                             break;
-
-                        /*======================== Process Request =========================*/
-                        case 4:
-                            ProcessRequest();
-                            break;
-
+                       
                         /*======================== Loan Requests =========================*/
                         case 5:
                             LoanRequestss();
@@ -333,14 +333,13 @@ namespace MiniBankSystemProject
 
                         /*======================== Delete Account =========================*/
                         case 9:
-                            DeleteUserAccount();
+                            RequestDeleteUserAccount();
                             break;
 
                         /*======================== Make Review =========================*/
                         case 10:
 
                             Reviews();
-                            Console.WriteLine("\nPress Enter to Go Back To Menu...");
                             break;
 
                         /*======================== - =========================*/
@@ -1016,8 +1015,8 @@ namespace MiniBankSystemProject
 
         }
 
-        /*------------------------Delete Account---------------------*/
-        public static void DeleteUserAccount()
+        /*------------------------Request Delete Account---------------------*/
+        public static void RequestDeleteUserAccount()
         {
             Console.Clear();
             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
