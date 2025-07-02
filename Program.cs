@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Principal;
+using System.Transactions;
+using static MiniBankSystemProject.Program;
 
 namespace MiniBankSystemProject
 {
@@ -46,6 +49,7 @@ namespace MiniBankSystemProject
         static string UsersFilePath = "users.txt";         // File for saving/loading users
         static string ReviewsFilePath = "reviews.txt";     // File for saving/loading reviews
         static string TransactionsDir = "transactions";    // Folder for transaction logs/receipts
+
 
         // =============================
         //        DECORATIONS
@@ -496,6 +500,8 @@ namespace MiniBankSystemProject
                 Console.WriteLine("  ║ [7]  Show Top Three Richest                        ║");
                 Console.WriteLine("  ║ [8]  Show Total Bank Balance                       ║");
                 Console.WriteLine("  ║ [9]  View Reviews                                  ║");
+                Console.WriteLine("  ║ [10] View All Transaction                          ║");
+                Console.WriteLine("  ║ [11] Search User Transaction                       ║");
                 Console.WriteLine("  ║ [0]  Logout                                        ║");
                 Console.WriteLine("  ╚════════════════════════════════════════════════════╝");
                 Console.Write("  Choose: ");
@@ -511,6 +517,8 @@ namespace MiniBankSystemProject
                     case "7": ShowTopRichestCustomers(); break;
                     case "8": ShowTotalBankBalance(); break;
                     case "9": ViewReviews(); break;
+                    case "10": ShowAllTransactionsForAllUsers(); break;
+                    case "11": AdminSearchUserTransactions(); break;
                     case "0": return;
                     default: Console.WriteLine("Invalid choice!"); PauseBox(); break;
                 }
@@ -711,6 +719,85 @@ namespace MiniBankSystemProject
             PrintBoxFooter();
             PauseBox();
         }
+
+        /// <summary>
+        /// Shows all transactions from all users/accounts in the bank.
+        /// Each account's transaction history is read from its dedicated file.
+        /// Used by Admin to audit all activity.
+        /// </summary>
+        public static void ShowAllTransactionsForAllUsers()
+        {
+            Console.Clear();
+            PrintBoxHeader("ALL TRANSACTIONS (ALL USERS)", "💸");
+
+            bool found = false;
+            for (int i = 0; i < accountNumbersL.Count; i++)
+            {
+                string fn = TransactionsDir + "/acc_" + accountNumbersL[i] + ".txt";
+                if (File.Exists(fn))
+                {
+                    string[] lines = File.ReadAllLines(fn);
+                    if (lines.Length > 0)
+                    {
+                        Console.WriteLine("| Username: " + accountNamesL[i]);
+                        foreach (string line in lines)
+                        {
+                            Console.WriteLine("|   " + line.PadRight(48) + "|");
+                        }
+                        found = true;
+                    }
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("|   No transactions found for any user.               |");
+            }
+            PrintBoxFooter();
+            PauseBox();
+        }
+
+        /// <summary>
+        /// Allows Admin to search and display all transactions for a specific user by username.
+        /// Reads the transaction history file for the selected account.
+        /// </summary>        
+        public static void AdminSearchUserTransactions()
+        {
+            Console.Clear();
+            PrintBoxHeader("SEARCH USER TRANSACTIONS", "🔎");
+            Console.Write("| Enter username: ");
+            string searchUser = Console.ReadLine();
+            bool found = false;
+
+            for (int i = 0; i < accountNamesL.Count; i++)
+            {
+                if (accountNamesL[i].Equals(searchUser, StringComparison.OrdinalIgnoreCase))
+                {
+                    string fn = TransactionsDir + "/acc_" + accountNumbersL[i] + ".txt";
+                    Console.WriteLine("| Transactions for: " + accountNamesL[i]);
+                    if (File.Exists(fn))
+                    {
+                        string[] lines = File.ReadAllLines(fn);
+                        foreach (string line in lines)
+                        {
+                            Console.WriteLine("|   " + line.PadRight(48) + "|");
+                        }
+                        found = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("|   No transactions found for this user.              |");
+                        found = true;
+                    }
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("|   No such username found in system.                 |");
+            }
+            PrintBoxFooter();
+            PauseBox();
+        }
+
 
         // =============================
         //        CUSTOMER MENU
@@ -938,5 +1025,11 @@ namespace MiniBankSystemProject
             PrintBoxFooter();
             PauseBox();
         }
+
+
+        
+
+
     }
+
 }
